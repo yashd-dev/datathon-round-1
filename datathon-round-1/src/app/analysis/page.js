@@ -1,26 +1,26 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import ReactMarkdown from "react-markdown"
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ReactMarkdown from "react-markdown";
 
 export default function AnalysisPage() {
-  const [policyText, setPolicyText] = useState("")
-  const [analysis, setAnalysis] = useState("")
-  const [loading, setLoading] = useState(true)
+  const [policyText, setPolicyText] = useState("");
+  const [analysis, setAnalysis] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedContext = localStorage.getItem("chatContext")
+    const storedContext = localStorage.getItem("chatContext");
     if (storedContext) {
-      setPolicyText(storedContext)
-      analyzePolicy(storedContext)
+      setPolicyText(storedContext);
+      analyzePolicy(storedContext);
     } else {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [])
+  }, []);
 
   const analyzePolicy = async (text) => {
-    setLoading(true)
+    setLoading(true);
     try {
       const response = await fetch("/api/analyze-policy", {
         method: "POST",
@@ -28,21 +28,24 @@ export default function AnalysisPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ policyText: text }),
-      })
+      });
 
       if (!response.ok) {
-        throw new Error("Failed to analyze policy")
+        console.error(response.body);
+        throw new Error("Failed to analyze policy");
       }
 
-      const data = await response.json()
-      setAnalysis(data.analysis)
+      const data = await response.json();
+      setAnalysis(data.analysis);
     } catch (error) {
-      console.error("Error analyzing policy:", error)
-      setAnalysis("An error occurred while analyzing the policy. Please try again later.")
+      console.error("Error analyzing policy:", error);
+      setAnalysis(
+        "An error occurred while analyzing the policy. Please try again later."
+      );
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -60,11 +63,12 @@ export default function AnalysisPage() {
               <ReactMarkdown>{analysis}</ReactMarkdown>
             </div>
           ) : (
-            <p className="text-center text-gray-600">No policy text found. Please upload a policy document first.</p>
+            <p className="text-center text-gray-600">
+              No policy text found. Please upload a policy document first.
+            </p>
           )}
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
-
