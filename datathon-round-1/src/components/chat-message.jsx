@@ -1,5 +1,6 @@
-import ReactMarkdown from "react-markdown";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export default function ChatMessage({ message }) {
   const isUser = message.role === "user";
@@ -11,24 +12,21 @@ export default function ChatMessage({ message }) {
           isUser ? "flex-row-reverse" : ""
         }`}
       >
-        <Avatar className="w-8 h-8">
-          <AvatarImage
-            src={
-              isUser
-                ? "https://cdn.jsdelivr.net/gh/alohe/avatars/png/vibrent_3.png"
-                : "https://github.com/shadcn.png"
-            }
-          />
-          <AvatarFallback>{isUser ? "You" : "Bot"}</AvatarFallback>
+        <Avatar className={isUser ? "bg-blue-500" : "bg-green-500"}>
+          <AvatarFallback>{isUser ? "U" : "AI"}</AvatarFallback>
+          {!isUser && <AvatarImage src="/ai-avatar.png" alt="AI Avatar" />}
         </Avatar>
         <div
-          className={`p-3 rounded-lg  w-3/4 ${
-            isUser
-              ? "bg-blue-500 text-white"
-              : "bg-white border border-gray-300"
+          className={`max-w-md p-3 rounded-lg ${
+            isUser ? "bg-blue-100 text-blue-900" : "bg-gray-100 text-gray-900"
           }`}
         >
-          <ReactMarkdown>{message.content}</ReactMarkdown>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            className="prose prose-sm max-w-none"
+          >
+            {message.content}
+          </ReactMarkdown>
         </div>
       </div>
     </div>

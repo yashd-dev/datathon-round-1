@@ -1,5 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Check, Star } from "lucide-react";
+import UploadPDF from "@/components/upload";
+
 export default function Home() {
   return (
     <div className="bg-blue-50 grainy-light">
@@ -86,12 +88,7 @@ function HeroSection() {
         </div>
 
         <div className="relative px-8 sm:px-16 md:px-0 mt-28 md:mx-auto md:max-w-xl w-full lg:mx-0 lg:mt-20">
-          <img
-            alt="try-it"
-            aria-hidden="true"
-            src="https://images.unsplash.com/photo-1517554558809-9b4971b38f39?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            className=" hidden sm:block rounded-2xl"
-          />
+          <UploadPDF />
         </div>
       </div>
       <div className="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-t from-white sm:h-32" />

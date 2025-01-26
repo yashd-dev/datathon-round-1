@@ -11,21 +11,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import ChatMessage from "@/components/chat-message";
+import { Send } from "lucide-react";
 
 export default function Chat() {
   const [messages, setMessages] = useState([
     {
-      role: "user",
-      content:
-        "You are an insurance expert specializing exclusively in insurance policies, products, and regulations in India. This includes private insurance offerings and Indian government schemes related to insurance, such as health, life, crop, and other specialized policies. Use the provided context to inform your responses, ensuring they are accurate and specific to the Indian market. If you don't know the answer to a question, respond with 'I don't know' rather than providing incorrect or irrelevant information.",
-    },
-    {
       role: "model",
-      content: `I’m an insurance expert specializing exclusively in the Indian insurance market, including private policies and government schemes like health, life, crop, and other insurance programs. I can assist you with questions about policies, products, regulations, and government initiatives specific to India. Please ask your questions, and I’ll provide accurate and helpful information based on the provided context. If I’m unsure about something, I’ll inform you rather than giving incorrect or irrelevant information. How can I assist you today?`,
+      content: `Namaste! I'm your AI Insurance Expert, specializing in Indian insurance policies, products, and regulations. I can assist you with information about private insurance offerings and government schemes related to health, life, crop, and other specialized policies in India. How may I help you today?`,
     },
   ]);
 
   const [input, setInput] = useState("");
+  const messagesEndRef = useRef(null);
   const contextAdded = useRef(false);
 
   useEffect(() => {
@@ -36,10 +33,10 @@ export default function Chat() {
       setMessages(JSON.parse(storedMessages));
     }
 
-    if (storedContext) {
+    if (storedContext && !contextAdded.current) {
       setMessages((prevMessages) => [
         ...prevMessages,
-        { role: "system", content: `${storedContext}` },
+        { role: "system", content: `Context: ${storedContext}` },
       ]);
       contextAdded.current = true;
     }
@@ -48,6 +45,10 @@ export default function Chat() {
   useEffect(() => {
     localStorage.setItem("chatHistory", JSON.stringify(messages));
   }, [messages]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messagesEndRef]); //Corrected dependency
 
   const handleSend = async () => {
     if (input.trim() === "") return;
@@ -79,50 +80,47 @@ export default function Chat() {
       console.error("Error:", error);
       const errorMessage = {
         role: "model",
-        content: "Sorry, I encountered an error. Please try again.",
+        content:
+          "I apologize, but I encountered an error. Could you please try again?",
       };
       setMessages((prevMessages) => [...prevMessages, errorMessage]);
     }
   };
 
   return (
-    <Card className="flex flex-col h-full max-w-4xl mx-auto my-4 shadow-lg p-4">
-      <CardHeader className="bg-blue-500 text-white rounded-t-lg p-4">
-        <CardTitle className="text-2xl font-bold text-center">
-          Insurance Expert Chat
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="flex-grow overflow-auto p-4 space-y-4 bg-white">
-        {messages
-          .filter((m) => m.role !== "system")
-          .map((message, index) => (
-            <ChatMessage key={index} message={message} />
-          ))}
-        <div
-          ref={(el) => {
-            if (el) {
-              el.scrollIntoView({ behavior: "smooth" });
-            }
-          }}
-        />
-      </CardContent>
-      <CardFooter className="bg-gray-50 p-4">
-        <div className="flex items-center w-full space-x-2">
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about insurance policies in India..."
-            onKeyPress={(e) => e.key === "Enter" && handleSend()}
-            className="flex-grow"
-          />
-          <Button
-            onClick={handleSend}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow"
-          >
-            Send
-          </Button>
-        </div>
-      </CardFooter>
-    </Card>
+    <div className="flex flex-col h-screen bg-gray-100">
+      <Card className="flex flex-col h-[90%] w-full max-w-4xl my-5 mx-auto shadow-lg">
+        <CardHeader className="bg-blue-500 text-white rounded-t-lg p-4">
+          <CardTitle className="text-2xl font-bold text-center">
+            Indian Insurance Expert
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex-grow overflow-y-auto p-4 space-y-4 bg-white">
+          {messages
+            .filter((m) => m.role !== "system")
+            .map((message, index) => (
+              <ChatMessage key={index} message={message} />
+            ))}
+          <div ref={messagesEndRef} />
+        </CardContent>
+        <CardFooter className="bg-gray-50 p-4">
+          <div className="flex items-center w-full space-x-2">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Ask about insurance policies in India..."
+              onKeyPress={(e) => e.key === "Enter" && handleSend()}
+              className="flex-grow"
+            />
+            <Button
+              onClick={handleSend}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow"
+            >
+              <Send className="h-5 w-5" />
+            </Button>
+          </div>
+        </CardFooter>
+      </Card>
+    </div>
   );
 }
