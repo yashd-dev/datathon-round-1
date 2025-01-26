@@ -25,8 +25,11 @@ const Navbar = () => {
             <Link className="hover:underline" href="#video-demo">
               Video Demo
             </Link>
-            <Link className="hover:underline" href="#api">
-              API
+            <Link className="hover:underline" href="/analysis">
+              Analysis
+            </Link>
+            <Link className="hover:underline" href="/chat">
+              Chat
             </Link>
           </div>
 

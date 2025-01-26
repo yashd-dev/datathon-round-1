@@ -25,7 +25,8 @@ export default function UploadPDF() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/upload_pdf", {
+      const response = await fetch("https://datathon-backend.mpst.me/", {
+        mode: "no-cors",
         method: "POST",
         body: formData,
       });
